@@ -91,17 +91,23 @@ app.delete("/api/v1/messages/:id", (req, res) => {
   });
 });
 
-app.get("/api/v1/messages", (req, res) => {
-  const { user } = req.query;
+// GET-eindpunt voor een enkel bericht op basis van ID
+app.get("/api/v1/messages/:username", (req, res) => {
+  const username = req.params.username;
+  const message = messages.find((msg) => msg.username === username);
 
-  if (user) {
-    res.json({
-      message: `GETTING message for username ${user}`,
+  if (!message) {
+    res.status(404).json({
+      status: "error",
+      message: "Message not found",
     });
   } else {
-    res.status(400).json({
-      status: "error",
-      message: "Please provide a 'user' query parameter",
+    res.json({
+      status: "success",
+      message: `GETTING message with username ${username}`,
+      data: {
+        message,
+      },
     });
   }
 });
