@@ -55,11 +55,10 @@ app.get("/api/v1/messages/:id", (req, res) => {
   }
 });
 
-// POST-eindpunt om een nieuw bericht toe te voegen
 app.post("/api/v1/messages", (req, res) => {
   const { user, text } = req.body.message;
   const newMessage = {
-    id: String(Math.floor(Math.random() * 1000)), // Simpele ID-generatie
+    id: String(Math.floor(Math.random() * 1000)),
     user,
     message: text,
   };
@@ -68,6 +67,14 @@ app.post("/api/v1/messages", (req, res) => {
 
   res.json({
     message: `POSTING a new message for user ${user}`,
+  });
+});
+
+app.put("/api/v1/messages/:id", (req, res) => {
+  const messageId = req.params.id;
+
+  res.json({
+    message: `UPDATING a message with ID ${messageId}`,
   });
 });
 
