@@ -28,16 +28,16 @@ const messages = [
   },
 ];
 
-// GET-eindpunt voor alle berichten
-app.get("/api/v1/messages", (req, res) => {
-  res.json({
-    status: "success",
-    message: "GETTING messages",
-    data: {
-      messages,
-    },
-  });
-});
+// // GET-eindpunt voor alle berichten
+// app.get("/api/v1/messages", (req, res) => {
+//   res.json({
+//     status: "success",
+//     message: "GETTING messages",
+//     data: {
+//       messages,
+//     },
+//   });
+// });
 
 // GET-eindpunt voor een enkel bericht op basis van ID
 app.get("/api/v1/messages/:id", (req, res) => {
@@ -92,18 +92,27 @@ app.delete("/api/v1/messages/:id", (req, res) => {
 });
 
 // GET-eindpunt voor alle berichten met bepaalde username
-app.get(" /api/v1/messages", (req, res) => {
+app.get("/api/v1/messages", (req, res) => {
   const username = req.query.user;
 
   if (username) {
+    // Filter messages for the specified username
+    const filteredMessages = messages.filter((msg) => msg.user === username);
+
     res.json({
       status: "success",
       message: `GET messages with username ${username}`,
+      data: {
+        messages: filteredMessages,
+      },
     });
   } else {
     res.json({
       status: "success",
-      message: "GET all messages",
+      message: "GETTING messages",
+      data: {
+        messages,
+      },
     });
   }
 });
