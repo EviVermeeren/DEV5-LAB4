@@ -46,7 +46,6 @@ app.get("/api/v1/messages/911", (req, res) => {
 app.post("/api/v1/messages", (req, res) => {
   const { user, text } = req.body.message;
   const newMessage = {
-    id: String(Math.floor(Math.random() * 1000)), // Simpele ID-generatie
     user,
     message: text,
   };
