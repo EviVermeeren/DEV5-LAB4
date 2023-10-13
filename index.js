@@ -94,14 +94,14 @@ app.delete("/api/v1/messages/:id", (req, res) => {
 app.get("/api/v1/messages", (req, res) => {
   const { user } = req.query;
 
-  if (!user) {
+  if (user) {
+    res.json({
+      message: `GETTING message for username ${user}`,
+    });
+  } else {
     res.status(400).json({
       status: "error",
       message: "Please provide a 'user' query parameter",
-    });
-  } else {
-    res.json({
-      message: `GETTING message for username ${user}`,
     });
   }
 });
