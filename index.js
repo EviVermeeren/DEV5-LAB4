@@ -42,6 +42,22 @@ app.get("/api/v1/messages/911", (req, res) => {
   });
 });
 
+// POST-eindpunt om een nieuw bericht toe te voegen
+app.post("/api/v1/messages", (req, res) => {
+  const { user, text } = req.body.message;
+  const newMessage = {
+    id: String(Math.floor(Math.random() * 1000)), // Simpele ID-generatie
+    user,
+    message: text,
+  };
+
+  messages.push(newMessage);
+
+  res.json({
+    message: `POSTING a new message for user ${user}`,
+  });
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
