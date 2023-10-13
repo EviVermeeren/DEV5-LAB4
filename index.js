@@ -91,10 +91,10 @@ app.delete("/api/v1/messages/:id", (req, res) => {
   });
 });
 
-// GET-eindpunt voor een enkel bericht op basis van ID
-app.get("/api/v1/messages/:username", (req, res) => {
-  const username = req.params.username;
-  const message = messages.find((msg) => msg.username === username);
+// GET-eindpunt voor alle berichten met bepaalde username
+app.get("/api/v1/messages/:user", (req, res) => {
+  const messageUser = req.params.user;
+  const message = messages.find((msg) => msg.user === messageUser);
 
   if (!message) {
     res.status(404).json({
@@ -104,7 +104,7 @@ app.get("/api/v1/messages/:username", (req, res) => {
   } else {
     res.json({
       status: "success",
-      message: `GETTING message with username ${username}`,
+      message: `GETTING message with user ${messageUser}`,
       data: {
         message,
       },
