@@ -91,8 +91,8 @@ app.delete("/api/v1/messages/:id", (req, res) => {
   });
 });
 
-app.get("/api/v1/messages", (req, res) => {
-  const { user } = req.query;
+app.get("/api/v1/messages/:user", (req, res) => {
+  const user = req.params.user;
 
   const filteredMessages = messages.filter((message) => message.user === user);
 
