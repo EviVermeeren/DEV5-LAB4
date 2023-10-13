@@ -91,22 +91,17 @@ app.delete("/api/v1/messages/:id", (req, res) => {
   });
 });
 
-app.get("/api/v1/messages/:user", (req, res) => {
-  const user = req.params.user;
+app.get("/api/v1/messages", (req, res) => {
+  const { user } = req.query;
 
-  const filteredMessages = messages.filter((message) => message.user === user);
-
-  if (filteredMessages.length === 0) {
-    res.status(404).json({
+  if (!user) {
+    res.status(400).json({
       status: "error",
-      message: `No messages found for user ${user}`,
+      message: "Please provide a 'user' query parameter",
     });
   } else {
     res.json({
       message: `GETTING message for username ${user}`,
-      data: {
-        messages: filteredMessages,
-      },
     });
   }
 });
