@@ -92,22 +92,18 @@ app.delete("/api/v1/messages/:id", (req, res) => {
 });
 
 // GET-eindpunt voor alle berichten met bepaalde username
-app.get("/api/v1/messages/:user", (req, res) => {
-  const messageUser = req.params.user;
-  const message = messages.find((msg) => msg.user === messageUser);
+app.get(" /api/v1/messages", (req, res) => {
+  const username = req.query.user;
 
-  if (!message) {
-    res.status(404).json({
-      status: "error",
-      message: "Message not found",
+  if (username) {
+    res.json({
+      status: "success",
+      message: `GET messages with username ${username}`,
     });
   } else {
     res.json({
       status: "success",
-      message: `GETTING message with user ${messageUser}`,
-      data: {
-        message,
-      },
+      message: "GET all messages",
     });
   }
 });
