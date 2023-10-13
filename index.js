@@ -21,6 +21,11 @@ const messages = [
     user: "Evi Vermeêren",
     message: "Goedemorgeeeen...",
   },
+  {
+    id: "913",
+    user: "pikachu",
+    message: "Dit is een bericht van pikachu :D",
+  },
 ];
 
 // GET-eindpunt voor alle berichten
@@ -84,6 +89,26 @@ app.delete("/api/v1/messages/:id", (req, res) => {
   res.json({
     message: `DELETING a message with ID ${messageId}`,
   });
+});
+
+app.get("/api/v1/messages", (req, res) => {
+  const { user } = req.query;
+
+  const filteredMessages = messages.filter((message) => message.user === user);
+
+  if (filteredMessages.length === 0) {
+    res.status(404).json({
+      status: "error",
+      message: `No messages found for user ${user}`,
+    });
+  } else {
+    res.json({
+      message: `GETTING message for username ${user}`,
+      data: {
+        messages: filteredMessages,
+      },
+    });
+  }
 });
 
 app.listen(port, () => {
