@@ -12,6 +12,18 @@ mongoose.connect(
   }
 );
 
+const messageSchema = new mongoose.Schema(
+  {
+    user: String,
+    text: String,
+  },
+  {
+    collection: "messages",
+  }
+);
+
+const Message = mongoose.model("Message", messageSchema);
+
 // Body-parser middleware om JSON-berichten te verwerken
 app.use(express.json());
 
@@ -19,43 +31,53 @@ app.use(express.json());
 const cors = require("cors");
 app.use(cors());
 
-// Lijst met bestaande berichten
-const messages = [
-  {
-    id: "911",
-    user: "Joris Hens",
-    message: "Hallo daar!",
-  },
-  {
-    id: "912",
-    user: "Evi Vermeêren",
-    message: "Goedemorgeeeen...",
-  },
-  {
-    id: "913",
-    user: "pikachu",
-    message: "Dit is een bericht van pikachu :D",
-  },
-];
+// GET-eindpunt for a message based on ID sent as a query parameter
+app.get("/api/v1/messages", async (req, res) => {
+  const messageId = req.query.id;
 
-// GET-eindpunt voor een enkel bericht op basis van ID
-app.get("/api/v1/messages/:id", (req, res) => {
-  const messageId = req.params.id;
-  const message = messages.find((msg) => msg.id === messageId);
+  if (messageId) {
+    try {
+      const message = await Message.findById(messageId);
 
-  if (!message) {
-    res.status(404).json({
-      status: "error",
-      message: "Message not found",
-    });
+      if (!message) {
+        return res.status(404).json({
+          status: "error",
+          message: "Message not found",
+        });
+      }
+
+      return res.json({
+        status: "success",
+        message: `GETTING message with ID ${messageId}`,
+        data: {
+          message,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        status: "error",
+        message: "Internal Server Error",
+      });
+    }
   } else {
-    res.json({
-      status: "success",
-      message: `GETTING message with ID ${messageId}`,
-      data: {
-        message,
-      },
-    });
+    // If no ID is provided, return all messages
+    try {
+      const messages = await Message.find({});
+      return res.json({
+        status: "success",
+        message: "GETTING all messages",
+        data: {
+          messages,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        status: "error",
+        message: "Internal Server Error",
+      });
+    }
   }
 });
 
