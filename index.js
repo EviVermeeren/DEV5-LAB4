@@ -4,7 +4,12 @@ const port = 3000;
 
 const mongoose = require("mongoose");
 mongoose.connect(
-  "mongodb+srv://evivermeeren:wachtwoord@cluster0.ep81pko.mongodb.net/?retryWrites=true&w=majority"
+  "mongodb+srv://evivermeeren:wachtwoord@cluster0.ep81pko.mongodb.net/?retryWrites=true&w=majority",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    dbName: "messages",
+  }
 );
 
 // Body-parser middleware om JSON-berichten te verwerken
