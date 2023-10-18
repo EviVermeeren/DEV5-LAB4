@@ -170,28 +170,32 @@ app.delete("/api/v1/messages/:id", async (req, res) => {
   }
 });
 
-// GET-eindpunt voor alle berichten met bepaalde username
-app.get("/api/v1/messages", (req, res) => {
+app.get("/api/v1/messages", async (req, res) => {
   const username = req.query.user;
 
-  if (username) {
-    // Filter messages for the specified username
-    const filteredMessages = messages.filter((msg) => msg.user === username);
+  try {
+    let messages;
+
+    if (username) {
+      // Filter messages for the specified username from the database
+      messages = await Message.find({ user: username });
+    } else {
+      // Retrieve all messages from the database
+      messages = await Message.find({});
+    }
 
     res.json({
       status: "success",
-      message: `GET messages with username ${username}`,
-      data: {
-        messages: filteredMessages,
-      },
-    });
-  } else {
-    res.json({
-      status: "success",
-      message: "GETTING messages",
+      message: `GET messages with username ${username || "all"}`,
       data: {
         messages,
       },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "error",
+      message: "Internal Server Error",
     });
   }
 });
