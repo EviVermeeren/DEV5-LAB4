@@ -81,19 +81,29 @@ app.get("/api/v1/messages", async (req, res) => {
   }
 });
 
-app.post("/api/v1/messages", (req, res) => {
+app.post("/api/v1/messages", async (req, res) => {
   const { user, text } = req.body.message;
-  const newMessage = {
-    id: String(Math.floor(Math.random() * 1000)),
+
+  const newMessage = new Message({
     user,
-    message: text,
-  };
-
-  messages.push(newMessage);
-
-  res.json({
-    message: `POSTING a new message for user ${user}`,
+    text,
   });
+
+  try {
+    const message = await newMessage.save();
+    res.json({
+      status: "success",
+      message: `POSTING a new message for user ${user}`,
+      data: {
+        message,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: "error",
+      message: "Failed to save message",
+    });
+  }
 });
 
 app.put("/api/v1/messages/:id", (req, res) => {
