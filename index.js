@@ -140,12 +140,34 @@ app.put("/api/v1/messages/:id", async (req, res) => {
   }
 });
 
-app.delete("/api/v1/messages/:id", (req, res) => {
+app.delete("/api/v1/messages/:id", async (req, res) => {
   const messageId = req.params.id;
 
-  res.json({
-    message: `DELETING a message with ID ${messageId}`,
-  });
+  try {
+    // Use the findByIdAndDelete method to remove the message from the database
+    const deletedMessage = await Message.findByIdAndDelete(messageId);
+
+    if (!deletedMessage) {
+      return res.status(404).json({
+        status: "error",
+        message: "Message not found",
+      });
+    }
+
+    res.json({
+      status: "success",
+      message: `DELETING message with ID ${messageId}`,
+      data: {
+        message: deletedMessage,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "error",
+      message: "Internal Server Error",
+    });
+  }
 });
 
 // GET-eindpunt voor alle berichten met bepaalde username
