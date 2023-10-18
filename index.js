@@ -106,12 +106,38 @@ app.post("/api/v1/messages", async (req, res) => {
   }
 });
 
-app.put("/api/v1/messages/:id", (req, res) => {
+app.put("/api/v1/messages/:id", async (req, res) => {
   const messageId = req.params.id;
 
-  res.json({
-    message: `UPDATING a message with ID ${messageId}`,
-  });
+  try {
+    // Use the findByIdAndUpdate method to update the message in the database
+    const updatedMessage = await Message.findByIdAndUpdate(
+      messageId,
+      req.body,
+      { new: true }
+    );
+
+    if (!updatedMessage) {
+      return res.status(404).json({
+        status: "error",
+        message: "Message not found",
+      });
+    }
+
+    res.json({
+      status: "success",
+      message: `UPDATING message with ID ${messageId}`,
+      data: {
+        message: updatedMessage,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "error",
+      message: "Internal Server Error",
+    });
+  }
 });
 
 app.delete("/api/v1/messages/:id", (req, res) => {
