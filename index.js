@@ -2,6 +2,11 @@ const express = require("express");
 const app = express();
 const port = 3000;
 
+const mongoose = require("mongoose");
+mongoose.connect(
+  "mongodb+srv://evivermeeren:wachtwoord@cluster0.ep81pko.mongodb.net/?retryWrites=true&w=majority"
+);
+
 // Body-parser middleware om JSON-berichten te verwerken
 app.use(express.json());
 
@@ -27,17 +32,6 @@ const messages = [
     message: "Dit is een bericht van pikachu :D",
   },
 ];
-
-// // GET-eindpunt voor alle berichten
-// app.get("/api/v1/messages", (req, res) => {
-//   res.json({
-//     status: "success",
-//     message: "GETTING messages",
-//     data: {
-//       messages,
-//     },
-//   });
-// });
 
 // GET-eindpunt voor een enkel bericht op basis van ID
 app.get("/api/v1/messages/:id", (req, res) => {
