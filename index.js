@@ -33,10 +33,12 @@ app.use(cors());
 
 // GET-eindpunt for a message based on ID sent as a query parameter
 app.get("/api/v1/messages", async (req, res) => {
+  const username = req.query.user;
   const messageId = req.query.id;
 
-  if (messageId) {
-    try {
+  try {
+    if (messageId) {
+      // Handle requests with a message ID to retrieve a specific message
       const message = await Message.findById(messageId);
 
       if (!message) {
@@ -53,16 +55,18 @@ app.get("/api/v1/messages", async (req, res) => {
           message,
         },
       });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({
-        status: "error",
-        message: "Internal Server Error",
+    } else if (username) {
+      // Handle requests with a username to retrieve messages by username
+      const messages = await Message.find({ user: username });
+      return res.json({
+        status: "success",
+        message: `GET messages with username ${username}`,
+        data: {
+          messages,
+        },
       });
-    }
-  } else {
-    // If no ID is provided, return all messages
-    try {
+    } else {
+      // Handle requests without ID or username to retrieve all messages
       const messages = await Message.find({});
       return res.json({
         status: "success",
@@ -71,13 +75,13 @@ app.get("/api/v1/messages", async (req, res) => {
           messages,
         },
       });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({
-        status: "error",
-        message: "Internal Server Error",
-      });
     }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      status: "error",
+      message: "Internal Server Error",
+    });
   }
 });
 
@@ -159,36 +163,6 @@ app.delete("/api/v1/messages/:id", async (req, res) => {
       message: `DELETING message with ID ${messageId}`,
       data: {
         message: deletedMessage,
-      },
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      status: "error",
-      message: "Internal Server Error",
-    });
-  }
-});
-
-app.get("/api/v1/messages", async (req, res) => {
-  const username = req.query.user;
-
-  try {
-    let messages;
-
-    if (username) {
-      // Filter messages for the specified username from the database
-      messages = await Message.find({ user: username });
-    } else {
-      // Retrieve all messages from the database
-      messages = await Message.find({});
-    }
-
-    res.json({
-      status: "success",
-      message: `GET messages with username ${username || "all"}`,
-      data: {
-        messages,
       },
     });
   } catch (error) {
