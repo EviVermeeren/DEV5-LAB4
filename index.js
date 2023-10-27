@@ -3,14 +3,11 @@ const app = express();
 const port = 3000;
 
 const mongoose = require("mongoose");
-mongoose.connect(
-  "mongodb+srv://evivermeeren:wachtwoord@cluster0.ep81pko.mongodb.net/?retryWrites=true&w=majority",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    dbName: "messages",
-  }
-);
+mongoose.connect(process.env.MONGODB, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  dbName: "messages",
+});
 
 const messageSchema = new mongoose.Schema(
   {
